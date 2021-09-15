@@ -39,10 +39,35 @@ func ConnectDatabase(){
 	db := DB()
 
 	if db != nil {
-		db.Where("id > 1").Find(&houses)
-	}else{
-		log.Printf("erro2")
+		db.Find(&houses)
 	}
 	
 	return &houses
+  }
+
+  // add new house to the DB
+  func CreateHouse(house models.House) int {
+	db := DB()
+
+	result := db.Create(&house)
+
+	if result.RowsAffected == 0 || result.Error != nil {
+		return -1
+	}
+
+	return 1
+
+  }
+
+  // update housa data
+
+  func UpdateHouseData() int {
+	  return 1
+  }
+
+
+  // delete house by id 
+
+  func RemoveHouseById() int {
+	  return 1
   }

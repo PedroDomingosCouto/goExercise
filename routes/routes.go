@@ -14,6 +14,7 @@ func SetupRouter() *gin.Engine {
 	api := r.Group("/api") 
 	{
 		api.GET("houses", controllers.GetAllHouses)
+		api.POST("house", controllers.AddNewHouse)
 	}
 
 	return r
