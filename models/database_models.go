@@ -22,3 +22,7 @@ type Person struct {
 	IsMarried    bool
 	HouseId      int     	`gorm:"foreignKey:HouseId"`
 }
+
+func (Person) TableName() string {
+	return fmt.Sprintf("%s.person", os.Getenv("DB_SCHEMA"))
+}

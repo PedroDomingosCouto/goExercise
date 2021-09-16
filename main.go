@@ -1,6 +1,7 @@
 package main
 
 import (
+	"goExercise/helpers"
 	"goExercise/routes"
 	"log"
 
@@ -13,6 +14,8 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	helpers.ConnectDatabase()
+	
 	// Start API router
 	r := routes.SetupRouter()
 	r.Run()

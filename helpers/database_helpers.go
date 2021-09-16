@@ -67,7 +67,44 @@ func ConnectDatabase(){
 
 
   // delete house by id 
+  // validar qtd de membros com aquela casa
+func DeleteHouseById(houseId int) int {
+	db := DB()
+	var house models.House
 
-  func RemoveHouseById() int {
-	  return 1
+	result := db.Where("id = ?",houseId).Delete(&house)
+
+	if result.RowsAffected == 1 {
+		return 1
+	}
+	return -1
+}
+
+
+//members helpers
+
+func GetQuantityPersonByHouseID(houseId int) int{
+	db := DB()
+	var persons []models.Person
+
+	if db != nil {
+		result:=db.Where("houseid = ?", houseId).Find(&persons)
+		return int(result.RowsAffected)
+	}
+	
+	return -1
+}
+
+
+// get all person
+func GetAllPersons() *[]models.Person {
+	var person []models.Person
+
+	db := DB()
+
+	if db != nil {
+		db.Find(&person)
+	}
+	
+	return &person
   }

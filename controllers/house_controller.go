@@ -4,6 +4,7 @@ import (
 	"goExercise/models"
 	"goExercise/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -38,5 +39,20 @@ func AddNewHouse(c *gin.Context){
 	}
 
 	c.JSON(http.StatusBadRequest, responde)
+
+}
+
+func DeleteHouseById(c *gin.Context){
+	
+	houseId, err := strconv.Atoi(c.Param("houseId"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "House Id is required"})
+		return
+	}
+
+	response := services.DeleteHouseById(houseId)
+
+	c.JSON(http.StatusOK, response)
 
 }

@@ -15,6 +15,9 @@ func SetupRouter() *gin.Engine {
 	{
 		api.GET("houses", controllers.GetAllHouses)
 		api.POST("house", controllers.AddNewHouse)
+		api.DELETE("house/:houseId", controllers.DeleteHouseById)
+
+		api.GET("person", controllers.GetAllPersons)
 	}
 
 	return r
