@@ -71,7 +71,6 @@ func ConnectDatabase(){
   }
 
   // update housa data
-
   func UpdateHouseData() int {
 	  return 1
   }
@@ -107,7 +106,7 @@ func GetQuantityPersonByHouseID(houseId int) int{
 }
 
 
-// get all person
+// get all persons
 func GetAllPersons() *[]models.Person {
 	var person []models.Person
 
@@ -115,6 +114,19 @@ func GetAllPersons() *[]models.Person {
 
 	if db != nil {
 		db.Find(&person)
+	}
+	
+	return &person
+  }
+
+  // get person by id
+  func GetPersonById(personId int) *models.Person {
+	var person models.Person
+
+	db := DB()
+
+	if db != nil {
+		db.Where("id = ?", personId).Find(&person)
 	}
 	
 	return &person

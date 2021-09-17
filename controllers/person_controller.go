@@ -54,3 +54,20 @@ func DeletePersonById(c *gin.Context){
 
 	c.JSON(http.StatusOK, response)
 }
+
+func GetPersonData(c *gin.Context){
+	personId, err := strconv.Atoi(c.Param("personId"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Person Id is required"})
+		return
+	}
+
+	response, status := services.GetPersonData(personId)
+	if status == -1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Try Again"})
+		return
+	}
+
+	c.JSON(http.StatusOK, response)
+}

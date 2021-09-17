@@ -47,3 +47,16 @@ func DeletePersonById(personId int) (*gin.H){
 	}	
 	
 }
+
+func GetPersonData(personId int) (*models.PersonHouse, int){
+	var personHouse models.PersonHouse
+
+	personData := helpers.GetPersonById(personId)
+	if personData != nil {
+		houseData := helpers.GetHouseById(personData.HouseId)
+		personHouse.Person= (*personData)
+		personHouse.House= (*houseData)
+		return &personHouse,1
+	}
+	return nil, -1
+}

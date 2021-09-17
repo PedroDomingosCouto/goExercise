@@ -5,3 +5,7 @@ type HousePersons struct{
 	Persons []Person
 }
 
+type PersonHouse struct{
+	Person 
+	House House
+}

@@ -21,9 +21,10 @@ func SetupRouter() *gin.Engine {
 
 
 		//Person routes
-		api.GET("person", controllers.GetAllPersons)
+		api.GET("persons", controllers.GetAllPersons)
 		api.POST("person", controllers.AddNewPerson)
 		api.DELETE("person/:personId", controllers.DeletePersonById)
+		api.GET("person/:personId", controllers.GetPersonData)
 	}
 
 	return r
