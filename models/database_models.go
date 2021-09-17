@@ -18,9 +18,9 @@ func (House) TableName() string {
 
 type Person struct {
 	Id           int	 	`gorm:"primaryKey"`
+	HouseId      int     	`gorm:"foreignKey:HouseId" json:",omitempty"` 
 	Name         string
 	IsMarried    bool
-	HouseId      int     	`gorm:"foreignKey:HouseId"`
 }
 
 func (Person) TableName() string {

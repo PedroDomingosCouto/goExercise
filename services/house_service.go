@@ -27,7 +27,7 @@ func SaveHouse(house *models.House) (*gin.H, int) {
 	}
 
 	return &gin.H{
-		"response": "All stock updated with success.",
+		"response": "House added with success.",
 	}, 1
 }
 
@@ -49,4 +49,20 @@ func DeleteHouseById(houseId int) (*gin.H){
 		}
 	}	
 	
+}
+
+func GetHouseDataAndMembers(houseId int) (*models.HousePersons, int) {
+	var housePersons models.HousePersons
+
+	//get house data by id
+	houseData := helpers.GetHouseById(houseId)
+	if houseData != nil {
+		housePersonsData := helpers.GetPersonsByHouseId(houseId)
+
+		housePersons.House = (*houseData)
+		housePersons.Persons= (*housePersonsData)
+		return &housePersons,1
+	}
+	
+	return nil, -1
 }

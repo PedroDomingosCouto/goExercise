@@ -15,8 +15,8 @@ func GetAllHouses(c *gin.Context){
 	c.JSON(http.StatusOK, response)
 }
 
-// Controller to save stock updates to latter be sent to jetti
-// returns a HTTP 200 if all objects updated
+// Controller to add new house
+// returns a HTTP 200 if house is added
 // returns a HTTP 400 if body is malformed or there is an error
 func AddNewHouse(c *gin.Context){
 	
@@ -37,9 +37,7 @@ func AddNewHouse(c *gin.Context){
 		c.JSON(http.StatusOK, responde)
 		return
 	}
-
 	c.JSON(http.StatusBadRequest, responde)
-
 }
 
 func DeleteHouseById(c *gin.Context){
@@ -55,4 +53,19 @@ func DeleteHouseById(c *gin.Context){
 
 	c.JSON(http.StatusOK, response)
 
+}
+
+func GetHouseData(c *gin.Context) {
+	houseId, err := strconv.Atoi(c.Param("houseId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "House Id is required"})
+		return
+	}
+	response, status := services.GetHouseDataAndMembers(houseId)
+	if status == -1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Try Again"})
+		return
+	}
+
+	c.JSON(http.StatusOK, response)
 }

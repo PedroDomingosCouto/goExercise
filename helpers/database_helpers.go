@@ -41,9 +41,20 @@ func ConnectDatabase(){
 	if db != nil {
 		db.Find(&houses)
 	}
-	
 	return &houses
   }
+
+	//get house by id
+	func GetHouseById(houseId int) *models.House {
+		var house models.House
+		db := DB()
+
+		if db != nil {
+			db.Where("id = ?", houseId ).First(&house)
+			return &house
+		}
+		return nil
+  	}
 
   // add new house to the DB
   func CreateHouse(house models.House) int {
@@ -108,3 +119,42 @@ func GetAllPersons() *[]models.Person {
 	
 	return &person
   }
+
+// get all person
+func GetPersonsByHouseId(houseId int) *[]models.Person {
+	var persons []models.Person
+
+	db := DB()
+
+	if db != nil {
+		db.Model(&persons).Select("id, name, is_married").Find(&persons)
+	}
+	
+	return &persons
+  }
+
+    // add new house to the DB
+	func AddNewPerson(person models.Person) int {
+		db := DB()
+	
+		result := db.Create(&person)
+	
+		if result.RowsAffected == 0 || result.Error != nil {
+			return -1
+		}
+	
+		return 1
+	
+	  }
+
+	// delete person by id 
+	func DeletePersonById(personId int) int {
+		db := DB()
+		var person models.Person
+
+		result := db.Where("id = ?", personId).Delete(&person)
+		if result.RowsAffected > -1 {
+			return int(result.RowsAffected)
+		}
+		return -1
+	}
