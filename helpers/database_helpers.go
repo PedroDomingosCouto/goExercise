@@ -87,7 +87,7 @@ func ConnectDatabase(){
 				if resultCreate.RowsAffected == 0 || resultCreate.Error != nil {
 					return -1
 				}
-				return 1
+				return house.Id
 			} else if resultUpdate.RowsAffected == 1{
 				return 1
 			}
@@ -193,4 +193,17 @@ func GetPersonsByHouseId(houseId int) *[]models.Person {
 			}
 		}
 		return -1
+	}
+
+	func UpdateMarriedStatus(personId int, marriedStatus bool) int{
+		db := DB()
+		var person models.Person
+		if db != nil {
+			result := db.Model(&person).Where("id = ?", personId).Update("is_married", marriedStatus)
+			if result.RowsAffected > -1 {
+				return int(result.RowsAffected)
+		}
+	}
+		return -1
+		
 	}

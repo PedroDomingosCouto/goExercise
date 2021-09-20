@@ -83,6 +83,8 @@ func UpdateOrCreateHouse(houseId int,house *models.InsertHouseRequestBody) (*gin
 
 	if updateResult == -1 {
 		return &gin.H{"Error": "Update House failed"}, -1
+	}else if updateResult > 1 {
+		return &gin.H{"Error": fmt.Sprintf("House added with ID: %d", updateResult) }, 1
 	}
 
 	return &gin.H{

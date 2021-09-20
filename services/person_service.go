@@ -60,3 +60,20 @@ func GetPersonData(personId int) (*models.PersonHouse, int){
 	}
 	return nil, -1
 }
+
+func UpdateMarriedStatus(personId int, marriedStatus bool) *gin.H{
+	personMarriedUpdated := helpers.UpdateMarriedStatus(personId, marriedStatus)
+
+	if personMarriedUpdated == 0{
+		return &gin.H{
+			"response": fmt.Sprintf("The ID %d not exit", personId),
+		}
+	}else if personMarriedUpdated > 0{
+		return &gin.H{
+			"response": fmt.Sprintf("ID %d it has been successfully updated", personId),
+		}
+	}
+	return &gin.H{
+		"response": fmt.Sprintf("Id %d update failed", personId),
+	}
+}

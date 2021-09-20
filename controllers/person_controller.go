@@ -73,3 +73,23 @@ func GetPersonData(c *gin.Context){
 
 	c.JSON(http.StatusOK, response)
 }
+
+func UpdateMarriedStatus(c *gin.Context){
+	personId, err := strconv.Atoi(c.Param("personId"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Person Id is required"})
+		return
+	}
+
+	marriedStatus, errMarried := strconv.ParseBool(c.Param("marriedStatus"))
+	if errMarried != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "exported status is required"})
+		return
+	}
+
+	response := services.UpdateMarriedStatus(personId,marriedStatus)
+	
+	c.JSON(http.StatusOK, response )
+
+}
