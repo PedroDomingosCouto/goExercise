@@ -32,7 +32,7 @@ func ConnectDatabase(){
 	return db
   }
 
-// get all houses
+// Query to get houses from the database
   func GetAllHouses() *[]models.House {
 	var houses []models.House
 
@@ -44,7 +44,7 @@ func ConnectDatabase(){
 	return &houses
   }
 
-	//get house by id
+	// Query to get House by id
 	func GetHouseById(houseId int) *models.House {
 		var house models.House
 		db := DB()
@@ -56,24 +56,45 @@ func ConnectDatabase(){
 		return nil
   	}
 
-  // add new house to the DB
+  // insert a house into database
+  //returns the inserted row id or -1 if operation failed
   func CreateHouse(house models.House) int {
 	db := DB()
 
 	result := db.Create(&house)
 
 	if result.RowsAffected == 0 || result.Error != nil {
-		return -1
+		return house.Id
 	}
 
 	return 1
 
   }
 
-  // update housa data
-  func UpdateHouseData() int {
-	  return 1
-  }
+  // update house by id
+  func UpdateOrCreateHouse(houseId int, houseRequest *models.InsertHouseRequestBody) int{
+	db := DB()
+
+	house:=CreateHouseObject(*houseRequest)
+	if db != nil {
+		resultUpdate := db.Model(&house).
+		Where("id = ? ",houseId).
+		Updates(map[string]interface{}{"name": house.Name, "animal": house.Animal, "motto": house.Motto});
+		
+		if resultUpdate != nil {
+			if resultUpdate.RowsAffected == 0 {
+				resultCreate := db.Create(&house)
+				if resultCreate.RowsAffected == 0 || resultCreate.Error != nil {
+					return -1
+				}
+				return 1
+			} else if resultUpdate.RowsAffected == 1{
+				return 1
+			}
+		}
+	}
+	return -1
+}
 
 
   // delete house by id 
@@ -81,11 +102,11 @@ func ConnectDatabase(){
 func DeleteHouseById(houseId int) int {
 	db := DB()
 	var house models.House
-
-	result := db.Where("id = ?",houseId).Delete(&house)
-
-	if result.RowsAffected == 1 {
-		return 1
+	if db != nil {
+		result := db.Where("id = ?",houseId).Delete(&house)
+		if result.RowsAffected == 1 {
+			return 1
+		}
 	}
 	return -1
 }
@@ -114,9 +135,10 @@ func GetAllPersons() *[]models.Person {
 
 	if db != nil {
 		db.Find(&person)
+		return &person
 	}
 	
-	return &person
+	return nil
   }
 
   // get person by id
@@ -140,33 +162,35 @@ func GetPersonsByHouseId(houseId int) *[]models.Person {
 
 	if db != nil {
 		db.Model(&persons).Select("id, name, is_married").Find(&persons)
+		return &persons
 	}
-	
-	return &persons
+
+	return nil
   }
 
     // add new house to the DB
 	func AddNewPerson(person models.Person) int {
 		db := DB()
-	
-		result := db.Create(&person)
-	
-		if result.RowsAffected == 0 || result.Error != nil {
-			return -1
+		
+		if db != nil {
+			result := db.Create(&person)
+			if result.RowsAffected == 0 || result.Error != nil {
+				return -1
+			}
+			return 1
 		}
-	
-		return 1
-	
-	  }
+		return -1
+	}
 
 	// delete person by id 
 	func DeletePersonById(personId int) int {
 		db := DB()
 		var person models.Person
-
-		result := db.Where("id = ?", personId).Delete(&person)
-		if result.RowsAffected > -1 {
-			return int(result.RowsAffected)
+		if db != nil {
+			result := db.Where("id = ?", personId).Delete(&person)
+			if result.RowsAffected > -1 {
+				return int(result.RowsAffected)
+			}
 		}
 		return -1
 	}

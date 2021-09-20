@@ -9,14 +9,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Get All Houses
 func GetAllHouses() *[]models.House{
 	helpers.ConnectDatabase()
 	houses := helpers.GetAllHouses()
-
 	return houses
 	
 }
 
+// Service function to save a house
+// @params:
+//	-requestModel: Model with request data
 func SaveHouse(house *models.House) (*gin.H, int) {
 	
 	result := helpers.CreateHouse(*house)
@@ -31,8 +34,10 @@ func SaveHouse(house *models.House) (*gin.H, int) {
 	}, 1
 }
 
+// Service function to delete a house
+// @params:
+//	-house id
 func DeleteHouseById(houseId int) (*gin.H){
-
 	qtdPersonsInHouse :=  helpers.GetQuantityPersonByHouseID(houseId)
 
 	if qtdPersonsInHouse > 0{
@@ -51,6 +56,9 @@ func DeleteHouseById(houseId int) (*gin.H){
 	
 }
 
+// Service function to Get house by id and members a house
+// @params:
+//	-house id
 func GetHouseDataAndMembers(houseId int) (*models.HousePersons, int) {
 	var housePersons models.HousePersons
 
@@ -65,4 +73,19 @@ func GetHouseDataAndMembers(houseId int) (*models.HousePersons, int) {
 	}
 	
 	return nil, -1
+}
+
+// service function to update a house
+func UpdateOrCreateHouse(houseId int,house *models.InsertHouseRequestBody) (*gin.H,int){
+
+	//update
+	updateResult := helpers.UpdateOrCreateHouse(houseId,house)
+
+	if updateResult == -1 {
+		return &gin.H{"Error": "Update House failed"}, -1
+	}
+
+	return &gin.H{
+		"response": "House updated with success.",
+	}, 1
 }

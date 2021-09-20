@@ -29,6 +29,8 @@ func AddNewPerson(c *gin.Context){
 			"messsage": err.Error(),
 		})
 		return
+	}else{
+		
 	}
 
 	responde, status := services.AddPerson(requestBody)
