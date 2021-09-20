@@ -15,17 +15,17 @@ func SetupRouter() *gin.Engine {
 	{
 		//House routes
 		api.GET("houses", controllers.GetAllHouses)
-		api.POST("house", controllers.AddNewHouse)
-		api.DELETE("house/:houseId", controllers.DeleteHouseById)
-		api.GET("house/:houseId", controllers.GetHouseData)
-		api.PUT("house/update/:houseId", controllers.UpdateHouseData)
+		api.POST("houses", controllers.AddNewHouse)
+		api.DELETE("houses/:houseId", controllers.DeleteHouseById)
+		api.GET("houses/:houseId", controllers.GetHouseData)
+		api.PUT("houses/update/:houseId", controllers.UpdateHouseData)
 
 		//Person routes
 		api.GET("persons", controllers.GetAllPersons)
-		api.POST("person", controllers.AddNewPerson)
-		api.DELETE("person/:personId", controllers.DeletePersonById)
-		api.GET("person/:personId", controllers.GetPersonData)
-		api.PATCH("person/:personId/:marriedStatus", controllers.UpdateMarriedStatus)
+		api.POST("persons", controllers.AddNewPerson)
+		api.DELETE("persons/:personId", controllers.DeletePersonById)
+		api.GET("persons/:personId", controllers.GetPersonData)
+		api.PATCH("persons/:personId/:marriedStatus", controllers.UpdateMarriedStatus)
 	}
 
 	return r

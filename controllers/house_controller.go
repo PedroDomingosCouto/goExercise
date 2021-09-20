@@ -20,7 +20,7 @@ func GetAllHouses(c *gin.Context){
 func AddNewHouse(c *gin.Context){
 	
 	// check json body
-	requestBody := new(models.House)
+	requestBody := new(models.InsertHouseRequestBody)
 
 	if err := c.ShouldBindJSON(requestBody); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -31,13 +31,14 @@ func AddNewHouse(c *gin.Context){
 	}
 
 	// call SaveHouse to handle logic
-	responde, status := services.SaveHouse(requestBody)
+	response := services.SaveHouse(requestBody)
 
-	if status == 1{
-		c.JSON(http.StatusOK, responde)
+	if response == nil{
+		c.JSON(http.StatusBadRequest, "Add house failed")
 		return
 	}
-	c.JSON(http.StatusBadRequest, responde)
+	c.JSON(http.StatusOK, response)
+	
 }
 
 // Controller to delete a house
@@ -70,7 +71,7 @@ func GetHouseData(c *gin.Context) {
 	response, status := services.GetHouseDataAndMembers(houseId)
 
 	if status == -1 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "this identification does not exist or was not found"})
+		c.JSON(http.StatusOK, gin.H{"error": "this identification does not exist or was not found"})
 		return
 	}
 
@@ -98,13 +99,13 @@ func UpdateHouseData(c *gin.Context){
 		})
 		return
 	}
-		//call UpdateOrCreateHouse to handle logic
-	responde, status := services.UpdateOrCreateHouse(houseId,requestBody)
+	//call UpdateOrCreateHouse to handle logic
+	responde, house := services.UpdateOrCreateHouse(houseId,requestBody)
 
-	if status == 1{
-		c.JSON(http.StatusOK, responde)
+	if house == nil{
+		c.JSON(http.StatusBadRequest, responde)
 		return
 	}
-	c.JSON(http.StatusBadRequest, responde)
+	c.JSON(http.StatusOK, house)
 	
 }

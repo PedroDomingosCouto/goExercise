@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"goExercise/helpers"
 	"goExercise/models"
-	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,18 +19,11 @@ func GetAllHouses() *[]models.House{
 // Service function to save a house
 // @params:
 //	-requestModel: Model with request data
-func SaveHouse(house *models.House) (*gin.H, int) {
+func SaveHouse(house *models.InsertHouseRequestBody) *models.House {
 	
 	result := helpers.CreateHouse(*house)
-
-	if result == -1 {
-		log.Printf("Add house failed")
-		return &gin.H{"Error": "Add house failed"}, -1
-	}
-
-	return &gin.H{
-		"response": "House added with success.",
-	}, 1
+	
+	return result
 }
 
 // Service function to delete a house
@@ -45,12 +37,11 @@ func DeleteHouseById(houseId int) (*gin.H){
 	}else {
 		result := helpers.DeleteHouseById(houseId)
 		if result == -1 {
-			log.Printf("Delete house failed")
 			return &gin.H{"Error": "Delete house failed"}
 		}
 	
 		return &gin.H{
-			"response": "House deleted with success.",
+			"message": "ok",
 		}
 	}	
 	
@@ -76,18 +67,16 @@ func GetHouseDataAndMembers(houseId int) (*models.HousePersons, int) {
 }
 
 // service function to update a house
-func UpdateOrCreateHouse(houseId int,house *models.InsertHouseRequestBody) (*gin.H,int){
+func UpdateOrCreateHouse(houseId int,house *models.InsertHouseRequestBody) (*gin.H,*models.House){
 
 	//update
 	updateResult := helpers.UpdateOrCreateHouse(houseId,house)
 
-	if updateResult == -1 {
-		return &gin.H{"Error": "Update House failed"}, -1
-	}else if updateResult > 1 {
-		return &gin.H{"Error": fmt.Sprintf("House added with ID: %d", updateResult) }, 1
+	if updateResult == nil {
+		return &gin.H{"Error": "Update House failed"}, nil
 	}
 
 	return &gin.H{
 		"response": "House updated with success.",
-	}, 1
+	}, updateResult
 }
