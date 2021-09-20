@@ -25,7 +25,8 @@ func SetupRouter() *gin.Engine {
 		api.POST("persons", controllers.AddNewPerson)
 		api.DELETE("persons/:personId", controllers.DeletePersonById)
 		api.GET("persons/:personId", controllers.GetPersonData)
-		api.PATCH("persons/:personId/:marriedStatus", controllers.UpdateMarriedStatus)
+		api.PATCH("persons/updatemarried/:personId/:marriedStatus", controllers.UpdateMarriedStatus)
+		api.PATCH("persons/updatehouseid/:personId/:newHouseID", controllers.UpdateHouseID)
 	}
 
 	return r

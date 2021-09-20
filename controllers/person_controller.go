@@ -21,7 +21,7 @@ func GetAllPersons(c *gin.Context){
 func AddNewPerson(c *gin.Context){
 	
 	// check json body
-	requestBody := new(models.Person)
+	requestBody := new(models.InsertPersonRequestBody)
 
 	if err := c.ShouldBindJSON(requestBody); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -35,15 +35,17 @@ func AddNewPerson(c *gin.Context){
 
 	responde, status := services.AddPerson(requestBody)
 
-	if status == 1{
-		c.JSON(http.StatusOK, responde)
+	if status != nil  {
+		c.JSON(http.StatusOK, status)
 		return
 	}
 	c.JSON(http.StatusBadRequest, responde)
 
 }
 
-
+// Controller to delete a person
+// returns a HTTP 200 if person is deleted
+// returns a HTTP 400 if missing person Id
 func DeletePersonById(c *gin.Context){
 	personId, err := strconv.Atoi(c.Param("personId"))
 
@@ -57,6 +59,9 @@ func DeletePersonById(c *gin.Context){
 	c.JSON(http.StatusOK, response)
 }
 
+// Controller to get a person by id
+// returns a HTTP 200 if get person
+// returns a HTTP 400 if missing house Id
 func GetPersonData(c *gin.Context){
 	personId, err := strconv.Atoi(c.Param("personId"))
 
@@ -64,16 +69,19 @@ func GetPersonData(c *gin.Context){
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Person Id is required"})
 		return
 	}
-
-	response, status := services.GetPersonData(personId)
-	if status == -1 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Try Again"})
+	response := services.GetPersonData(personId)
+	
+	if response == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "This id not exist"})
 		return
 	}
 
 	c.JSON(http.StatusOK, response)
 }
 
+// Controller to update a perosn by id
+// returns a HTTP 200 if person married status is updated 
+// returns a HTTP 400 if missing person Id
 func UpdateMarriedStatus(c *gin.Context){
 	personId, err := strconv.Atoi(c.Param("personId"))
 
@@ -84,12 +92,41 @@ func UpdateMarriedStatus(c *gin.Context){
 
 	marriedStatus, errMarried := strconv.ParseBool(c.Param("marriedStatus"))
 	if errMarried != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "exported status is required"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "married status is required"})
 		return
 	}
 
-	response := services.UpdateMarriedStatus(personId,marriedStatus)
-	
-	c.JSON(http.StatusOK, response )
+	response, person := services.UpdateMarriedStatus(personId,marriedStatus)
 
+	if person == nil {
+		c.JSON(http.StatusBadRequest, response )
+	}
+
+	c.JSON(http.StatusOK, person)
+}
+
+// Controller to update a perosn by id
+// returns a HTTP 200 if person house status is updated 
+// returns a HTTP 400 if missing person Id
+func UpdateHouseID(c *gin.Context){
+	personId, err := strconv.Atoi(c.Param("personId"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Person Id is required"})
+		return
+	}
+
+	newHouseId, errNewHouseID := strconv.Atoi(c.Param("newHouseID"))
+	if errNewHouseID != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "New house id is required"})
+		return
+	}
+
+	response, person := services.UpdateHouseId(personId, newHouseId)
+
+	if person == nil {
+		c.JSON(http.StatusBadRequest, response )
+	}
+
+	c.JSON(http.StatusOK, person)
 }

@@ -23,10 +23,12 @@ func GetAllPersons() *[]models.Person {
 	db := DB()
 
 	if db != nil {
-		db.Where("id = ?", personId).Find(&person)
+		result := db.Where("id = ?", personId).Find(&person)
+		if result.RowsAffected > 0{
+			return &person
+		}
 	}
-	
-	return &person
+	return nil
   }
 
 // get all person
@@ -44,17 +46,19 @@ func GetPersonsByHouseId(houseId int) *[]models.Person {
   }
 
     // add new house to the DB
-	func AddNewPerson(person models.Person) int {
+	func AddNewPerson(personBody models.InsertPersonRequestBody) *models.Person {
 		db := DB()
+
+		parsedPerson := CreatePersonObject(personBody)
 		
 		if db != nil {
-			result := db.Create(&person)
+			result := db.Create(&parsedPerson)
 			if result.RowsAffected == 0 || result.Error != nil {
-				return -1
+				return nil
 			}
-			return 1
+			return &parsedPerson
 		}
-		return -1
+		return nil
 	}
 
 	// delete person by id 
@@ -70,15 +74,28 @@ func GetPersonsByHouseId(houseId int) *[]models.Person {
 		return -1
 	}
 
-	func UpdateMarriedStatus(personId int, marriedStatus bool) int{
+	//update maried status
+	func UpdateMarriedStatus(personId int, marriedStatus bool) *models.Person{
 		db := DB()
 		var person models.Person
 		if db != nil {
 			result := db.Model(&person).Where("id = ?", personId).Update("is_married", marriedStatus)
-			if result.RowsAffected > -1 {
-				return int(result.RowsAffected)
+			if result.RowsAffected > 0 {
+				return GetPersonById(personId)
+			}
 		}
+		return nil
 	}
-		return -1
-		
+
+	//update house id
+	func UpdateHouseId(personId int, newHouseId int) *models.Person {
+		db := DB()
+		var person models.Person
+		if db != nil {
+			result := db.Model(&person).Where("id = ?", personId).Update("house_id", newHouseId)
+			if result.RowsAffected > 0 {
+				return GetPersonById(personId)
+			}
+		}
+		return nil
 	}

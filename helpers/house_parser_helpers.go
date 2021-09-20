@@ -2,6 +2,7 @@ package helpers
 
 import "goExercise/models"
 
+//parser InsertHouseRequestBody object to house
 func CreateHouseObject(houseRequest models.InsertHouseRequestBody) models.House{
 	
 	house := models.House{}
